@@ -14,6 +14,7 @@ export function initialize(container, application) {
 
   Stripe.setPublishableKey(config.stripe.publishableKey);
   application.inject('controller', 'stripeService', 'service:stripe');
+  application.inject('route', 'stripeService', 'service:stripe');
 }
 
 export default {
