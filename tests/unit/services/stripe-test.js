@@ -86,3 +86,4 @@ test('it logs when LOG_STRIPE_SERVICE is set in env config', function() {
  * @todo figure out how to change env variables at runtime
  */
 QUnit.skip('it logs if LOG_STRIPE_SERVICE is false');
+QUnit.skip('it throws an error if config.stripe.publishableKey is not set');

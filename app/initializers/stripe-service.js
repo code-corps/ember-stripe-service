@@ -7,9 +7,11 @@ export function initialize(container, application) {
   if (debug) {
     Ember.Logger.info('StripeService: initialize');
   }
+
   if (!config.stripe.publishableKey) {
-    throw new Ember.Error('SripeService: Missing Stripe key, please set `ENV.stripe.publishableKey` in config.environment.js');
+    throw new Ember.Error('StripeService: Missing Stripe key, please set `ENV.stripe.publishableKey` in config.environment.js');
   }
+
   Stripe.setPublishableKey(config.stripe.publishableKey);
   application.inject('controller', 'stripeService', 'service:stripe');
 }
