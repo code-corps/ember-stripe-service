@@ -8,7 +8,8 @@
   "scripts": {
     "start": "ember server",
     "build": "ember build",
-    "test": "ember test --silent > $CIRCLE_TEST_REPORTS/test-results.xml"
+    "test": "ember test --silent > $CIRCLE_TEST_REPORTS/test-results.xml",
+    "postinstall": "bower install"
   },
   "repository": "https://github.com/buritica/ember-stripe-service",
   "engines": {
