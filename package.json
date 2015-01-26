@@ -1,15 +1,14 @@
 {
   "name": "ember-stripe-service",
   "version": "0.0.0",
-  "description": "The default blueprint for ember-cli addons.",
+  "description": "An ember-cli addon which injects Stripe as an Ember service",
   "directories": {
-    "doc": "doc",
     "test": "tests"
   },
   "scripts": {
     "start": "ember server",
     "build": "ember build",
-    "test": "ember test"
+    "test": "ember test --silent > $CIRCLE_TEST_REPORTS/test-results.xml"
   },
   "repository": "",
   "engines": {
@@ -32,7 +31,11 @@
     "glob": "^4.0.5"
   },
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "stripe",
+    "ember-cli",
+    "service",
+    "ember"
   ],
   "ember-addon": {
     "configPath": "tests/dummy/config"

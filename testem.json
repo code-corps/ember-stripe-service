@@ -1,6 +1,7 @@
 {
   "framework": "qunit",
   "test_page": "tests/index.html?hidepassed",
+  "reporter": "xunit",
   "launch_in_ci": [
     "PhantomJS"
   ],
