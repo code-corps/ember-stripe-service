@@ -41,7 +41,7 @@ To use it inside of a controller action or method you would:
 ````javascript
 
 export default Ember.Controller.extend({
-  myCreditCardProcessingMethod: funcition() {
+  myCreditCardProcessingMethod: function() {
 
     var customer = this.get('customer');
 
