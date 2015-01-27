@@ -35,3 +35,21 @@ test('it logs when LOG_STRIPE_SERVICE is set in env config', function() {
  * @todo figure out how to change env variables at runtime
  */
 QUnit.skip('no logs are generated if LOG_STRIPE_SERVICE is not set');
+
+test('it injects stripe service into controllers', function() {
+  var stub = sinon.stub(application, 'inject');
+
+  initialize(container, application);
+
+  ok(stub.calledWith('controller', 'stripeService', 'service:stripe'));
+  stub.restore();
+});
+
+test('it injects stripe service into controllers', function() {
+  var stub = sinon.stub(application, 'inject');
+
+  initialize(container, application);
+
+  ok(stub.calledWith('route', 'stripeService', 'service:stripe'));
+  stub.restore();
+});
