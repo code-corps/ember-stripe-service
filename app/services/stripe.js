@@ -19,11 +19,11 @@ function createToken (card) {
       }
 
       if (response.error) {
-        reject(response.error);
+        reject(response);
         return Ember.run.end();
       }
 
-      resolve(response.id);
+      resolve(response);
 
       Ember.run.end();
     });
