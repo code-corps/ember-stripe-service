@@ -51,18 +51,18 @@ export default Ember.Controller.extend({
     // if for example you had the cc set in your controller
     var card = this.get('creditCard');
 
-    return stripeService.createToken(card).then(function(token) {
+    return stripeService.createToken(card).then(function(response) {
       // you get access to your newly created token here
-      customer.set('stripeToken', token);
+      customer.set('stripeToken', response.id);
       return customer.save();
     })
     .then(function() {
       // do more stuff here
     })
-    .catch(error) {
+    .catch(response) {
       // if there was an error retrieving the token you could get it here
 
-      if (error.type === 'card_error') {
+      if (response.error.type === 'card_error') {
         // show the error in the form or something
       }
     }

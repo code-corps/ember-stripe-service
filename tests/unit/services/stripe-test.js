@@ -21,43 +21,40 @@ var cc = {
 
 test('createToken sets the token and returns a promise', function() {
   var service = this.subject();
+  var response = {
+    id: 'the_token'
+  };
 
   var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
     equal(card, cc, 'called with sample creditcard');
-
-    var response = {
-      id: 'the_token'
-    };
-
     cb(200, response);
   });
 
   return service.createToken(cc)
-    .then(function(token) {
-      equal(token, 'the_token');
+    .then(function(res) {
+      equal(res.id, 'the_token');
       createToken.restore();
     });
 });
 
 test('createToken rejects the promise if Stripe errors', function() {
   var service = this.subject();
-  var error = {
-    code: "invalid_number",
-    message: "The 'exp_month' parameter should be an integer (instead, is Month).",
-    param: "exp_month",
-    type: "card_error"
+  var response = {
+    error : {
+      code: "invalid_number",
+      message: "The 'exp_month' parameter should be an integer (instead, is Month).",
+      param: "exp_month",
+      type: "card_error"
+    }
   };
 
   var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
-    var response = {
-      error: error
-    };
     cb(402, response);
   });
 
   return service.createToken(cc)
-  .then(undefined, function(err) {
-    equal(error, err, 'error passed');
+  .then(undefined, function(res) {
+    equal(res, response, 'error passed');
     createToken.restore();
   });
 });
