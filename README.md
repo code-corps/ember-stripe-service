@@ -1,6 +1,6 @@
 
 # ember-stripe-service
-[![Build Status](https://travis-ci.org/buritica/ember-stripe-service.svg?branch=master)](https://travis-ci.org/buritica/ember-stripe-service)
+[![Build Status](https://travis-ci.org/ride/ember-stripe-service.svg?branch=master)](https://travis-ci.org/ride/ember-stripe-service)
 
 ## Description
 `ember-stripe-service` is an easy way to add Stripe.js library to your ember-cli project without having to deal with manually setting the script tag
