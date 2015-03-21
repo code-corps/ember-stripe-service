@@ -90,6 +90,6 @@ var ENV = {
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
 
 ## Upcoming Features
-- I'm thinking of giving access other methods of Stripe, but I'm not sure so if you find one useful please make an issue
+- We're thinking of giving access other methods of Stripe, but we're not sure so if you find one useful please make an issue
 - Provide an option to inject mocked Stripe library inspired by ember-cli-custom-form but with deeper mocking and set by config flag not environment so integration tests can still be run with real service if wanted
 - PRs welcome and encouraged, and if you're not sure how to implement something we could try to work together
