@@ -1,10 +1,8 @@
 /* global sinon, Stripe */
 
 import Ember from 'ember';
-import {
-  moduleFor,
-  test
-} from 'ember-qunit';
+import { moduleFor, test } from 'ember-qunit';
+import QUnit from 'qunit';
 
 moduleFor('service:stripe', 'StripeService', {
   // Specify the other units that are required for this test.
@@ -19,25 +17,25 @@ var cc = {
   address_zip: 12345
 };
 
-test('createToken sets the token and returns a promise', function() {
+test('createToken sets the token and returns a promise', function(assert) {
   var service = this.subject();
   var response = {
     id: 'the_token'
   };
 
   var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
-    equal(card, cc, 'called with sample creditcard');
+    assert.equal(card, cc, 'called with sample creditcard');
     cb(200, response);
   });
 
   return service.createToken(cc)
     .then(function(res) {
-      equal(res.id, 'the_token');
+      assert.equal(res.id, 'the_token');
       createToken.restore();
     });
 });
 
-test('createToken rejects the promise if Stripe errors', function() {
+test('createToken rejects the promise if Stripe errors', function(assert) {
   var service = this.subject();
   var response = {
     error : {
@@ -54,13 +52,13 @@ test('createToken rejects the promise if Stripe errors', function() {
 
   return service.createToken(cc)
   .then(undefined, function(res) {
-    equal(res, response, 'error passed');
+    assert.equal(res, response, 'error passed');
     createToken.restore();
   });
 });
 
 // LOG_STRIPE_SERVICE is set to true in dummy app
-test('it logs when LOG_STRIPE_SERVICE is set in env config', function() {
+test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
   var service = this.subject();
   var info = sinon.stub(Ember.Logger, 'info');
 
@@ -73,7 +71,7 @@ test('it logs when LOG_STRIPE_SERVICE is set in env config', function() {
 
   return service.createToken(cc)
   .then(function(err) {
-    ok(info.calledWith('StripeService: getStripeToken - card:', cc));
+    assert.ok(info.calledWith('StripeService: getStripeToken - card:', cc));
     createToken.restore();
     info.restore();
   });
