@@ -16,6 +16,6 @@ export function initialize() {
 }
 
 export default {
-  name: 'stripe-service',
+  name: 'stripe',
   initialize: initialize
 };
