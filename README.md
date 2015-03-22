@@ -15,7 +15,7 @@
 
 * `npm install --save ember-stripe-service`
 * `ember server`
-* set `stripe.publishablekey` in `config/environment.js`
+* set `stripe.publishableKey` in `config/environment.js`
 * Visit your app at http://localhost:4200, you should now see the stripe.js script has been included
 * `Stripe` global is now available in your app
 
@@ -41,17 +41,18 @@ To use it inside of a controller action or method you would:
 ````javascript
 
 export default Ember.Controller.extend({
+  stripe: Ember.inject.service(),
   myCreditCardProcessingMethod: function() {
 
     var customer = this.get('customer');
 
     // obtain access to the injected service
-    var stripeService = this.get('stripeService');
+    var stripe = this.get('stripe');
 
     // if for example you had the cc set in your controller
     var card = this.get('creditCard');
 
-    return stripeService.createToken(card).then(function(response) {
+    return stripe.createToken(card).then(function(response) {
       // you get access to your newly created token here
       customer.set('stripeToken', response.id);
       return customer.save();
