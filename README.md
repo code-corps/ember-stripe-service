@@ -30,7 +30,7 @@ ENV.stripe = {
 };
 ````
 
-## Creating Stripe Tokens
+## Creating Stripe Tokens for Cards
 
 `ember-stripe-service` provides a promisified version of `Stripe.createToken` which makes it easier to interact with its returns within your Ember controllers.
 
@@ -65,6 +65,37 @@ export default Ember.Controller.extend({
 
       if (response.error.type === 'card_error') {
         // show the error in the form or something
+      }
+    }
+  }
+})
+````
+## Creating Stripe Tokens for Bank Accounts
+
+The interface is similar for bank accounts:
+
+````javascript
+
+    // obtain access to the injected service
+    var stripe = this.get('stripe');
+
+    // if for example you had the cc set in your controller
+    var bankAccount = {
+      country: 'US',
+      routingNumber: '1235678',
+      accountNumber: '23875292349'
+    }
+
+    return stripe.createBankAccountToken(bankAccount).then(function(response) {
+      // you get access to your newly created token here
+      customer.set('bankAccountStripeToken', response.id);
+      return customer.save();
+    })
+    .catch(response) {
+      // if there was an error retrieving the token you could get it here
+
+      if (response.error.type === 'invalid_request_error') {
+        // show an error in the form
       }
     }
   }
