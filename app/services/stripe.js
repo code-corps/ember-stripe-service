@@ -30,6 +30,34 @@ function createToken (card) {
   });
 }
 
+function createBankAccountToken(bankAccount) {
+  if (debug) {
+    Ember.Logger.info('StripeService: getStripeToken - bankAccount:', bankAccount);
+  }
+
+  // manually start Ember loop
+  Ember.run.begin();
+
+  return new Ember.RSVP.Promise(function (resolve, reject) {
+    Stripe.bankAccount.createToken(bankAccount, function (status, response) {
+
+      if (debug) {
+        Ember.Logger.info('StripeService: createBankAccountToken handler - status %s, response:', status, response);
+      }
+
+      if (response.error) {
+        reject(response);
+        return Ember.run.end();
+      }
+
+      resolve(response);
+
+      Ember.run.end();
+    });
+  });
+}
+
 export default Ember.Object.extend({
-  createToken: createToken
+  createToken: createToken,
+  createBankAccountToken: createBankAccountToken,
 });
