@@ -60,13 +60,13 @@ export default Ember.Controller.extend({
     .then(function() {
       // do more stuff here
     })
-    .catch(response) {
+    .catch(function(response) {
       // if there was an error retrieving the token you could get it here
 
       if (response.error.type === 'card_error') {
         // show the error in the form or something
       }
-    }
+    });
   }
 })
 ````
