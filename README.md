@@ -8,7 +8,7 @@
 ## Features
 - sets stripe.js script in index.html (test, app)
 - initializes stripe with publishable key
-- injects service in controllers which provides promisified method for `Stripe.createToken`
+- injects service in controllers which provides promisified method for `Stripe.card.createToken`
 - provides debugging logs for easy troubleshooting
 
 ## Installation
@@ -32,9 +32,12 @@ ENV.stripe = {
 
 ## Creating Stripe Tokens for Cards
 
-`ember-stripe-service` provides a promisified version of `Stripe.createToken` which makes it easier to interact with its returns within your Ember controllers.
+`ember-stripe-service` provides a promisified version of
+`Stripe.card.createToken` which makes it easier to interact with its returns
+within your Ember controllers.
 
-The method makes createToken operate under Ember run's loop making it easier to create integration tests that operate with Stripe's test mode.
+The method makes `createToken` operate under Ember run's loop making it easier
+to create integration tests that operate with Stripe's test mode.
 
 To use it inside of a controller action or method you would:
 
@@ -52,7 +55,7 @@ export default Ember.Controller.extend({
     // if for example you had the cc set in your controller
     var card = this.get('creditCard');
 
-    return stripe.createToken(card).then(function(response) {
+    return stripe.card.createToken(card).then(function(response) {
       // you get access to your newly created token here
       customer.set('stripeToken', response.id);
       return customer.save();
@@ -72,7 +75,7 @@ export default Ember.Controller.extend({
 ````
 ## Creating Stripe Tokens for Bank Accounts
 
-The interface is similar for bank accounts:
+The interface is similar for bank account tokens:
 
 ````javascript
 
@@ -86,7 +89,7 @@ The interface is similar for bank accounts:
       accountNumber: '23875292349'
     }
 
-    return stripe.createBankAccountToken(bankAccount).then(function(response) {
+    return stripe.bankAccount.createToken(bankAccount).then(function(response) {
       // you get access to your newly created token here
       customer.set('bankAccountStripeToken', response.id);
       return customer.save();
@@ -102,7 +105,7 @@ The interface is similar for bank accounts:
 })
 ````
 
-## Debbuging
+## Debugging
 By setting `LOG_STRIPE_SERVICE` to true in your application configuration you can enable some debugging messages from the service
 
 ````javascript
