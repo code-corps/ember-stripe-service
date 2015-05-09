@@ -17,7 +17,47 @@ var cc = {
   address_zip: 12345
 };
 
-test('createToken sets the token and returns a promise', function(assert) {
+test('card.createToken sets the token and returns a promise', function(assert) {
+  var service = this.subject();
+  var response = {
+    id: 'the_token'
+  };
+
+  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+    assert.equal(card, cc, 'called with sample creditcard');
+    cb(200, response);
+  });
+
+  return service.card.createToken(cc)
+    .then(function(res) {
+      assert.equal(res.id, 'the_token');
+      createToken.restore();
+    });
+});
+
+test('card.createToken rejects the promise if Stripe errors', function(assert) {
+  var service = this.subject();
+  var response = {
+    error : {
+      code: "invalid_number",
+      message: "The 'exp_month' parameter should be an integer (instead, is Month).",
+      param: "exp_month",
+      type: "card_error"
+    }
+  };
+
+  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+    cb(402, response);
+  });
+
+  return service.card.createToken(cc)
+  .then(undefined, function(res) {
+    assert.equal(res, response, 'error passed');
+    createToken.restore();
+  });
+});
+
+test('createToken syntax is still supported', function(assert) {
   var service = this.subject();
   var response = {
     id: 'the_token'
@@ -35,28 +75,6 @@ test('createToken sets the token and returns a promise', function(assert) {
     });
 });
 
-test('createToken rejects the promise if Stripe errors', function(assert) {
-  var service = this.subject();
-  var response = {
-    error : {
-      code: "invalid_number",
-      message: "The 'exp_month' parameter should be an integer (instead, is Month).",
-      param: "exp_month",
-      type: "card_error"
-    }
-  };
-
-  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
-    cb(402, response);
-  });
-
-  return service.createToken(cc)
-  .then(undefined, function(res) {
-    assert.equal(res, response, 'error passed');
-    createToken.restore();
-  });
-});
-
 // Bank accounts
 
 var ba = {
@@ -65,7 +83,7 @@ var ba = {
   accountNumber: '125677688',
 };
 
-test('createBankAccountToken sets the token and returns a promise', function(assert) {
+test('bankAccount.createToken sets the token and returns a promise', function(assert) {
   var service = this.subject();
   var response = {
     id: 'the_token'
@@ -78,14 +96,14 @@ test('createBankAccountToken sets the token and returns a promise', function(ass
     cb(200, response);
   });
 
-  return service.createBankAccountToken(ba)
+  return service.bankAccount.createToken(ba)
     .then(function(res) {
       assert.equal(res.id, 'the_token');
       createBankAccountToken.restore();
     });
 });
 
-test('createBankAccountToken rejects the promise if Stripe errors', function(assert) {
+test('bankAccount.createToken rejects the promise if Stripe errors', function(assert) {
   var service = this.subject();
   var response = {
     error : {
@@ -102,7 +120,7 @@ test('createBankAccountToken rejects the promise if Stripe errors', function(ass
     cb(402, response);
   });
 
-  return service.createBankAccountToken(ba)
+  return service.bankAccount.createToken(ba)
   .then(undefined, function(res) {
     assert.equal(res, response, 'error passed');
     createBankAccountToken.restore();

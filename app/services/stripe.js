@@ -3,7 +3,7 @@ import config from '../config/environment';
 import Ember from 'ember';
 var debug = config.LOG_STRIPE_SERVICE;
 
-function createToken (card) {
+function createCardToken (card) {
   if (debug) {
     Ember.Logger.info('StripeService: getStripeToken - card:', card);
   }
@@ -15,7 +15,7 @@ function createToken (card) {
     Stripe.card.createToken(card, function (status, response) {
 
       if (debug) {
-        Ember.Logger.info('StripeService: createToken handler - status %s, response:', status, response);
+        Ember.Logger.info('StripeService: card.createToken handler - status %s, response:', status, response);
       }
 
       if (response.error) {
@@ -30,6 +30,13 @@ function createToken (card) {
   });
 }
 
+function createCardTokenDeprecated(card) {
+  Ember.deprecate('`EmberStripeService.createToken` has been deprecated in ' +
+                  'favour of `EmberStripeService.card.createToken` to match ' +
+                  'the Stripe API.');
+  return createCardToken(card);
+}
+
 function createBankAccountToken(bankAccount) {
   if (debug) {
     Ember.Logger.info('StripeService: getStripeToken - bankAccount:', bankAccount);
@@ -42,7 +49,7 @@ function createBankAccountToken(bankAccount) {
     Stripe.bankAccount.createToken(bankAccount, function (status, response) {
 
       if (debug) {
-        Ember.Logger.info('StripeService: createBankAccountToken handler - status %s, response:', status, response);
+        Ember.Logger.info('StripeService: bankAccount.createToken handler - status %s, response:', status, response);
       }
 
       if (response.error) {
@@ -58,6 +65,11 @@ function createBankAccountToken(bankAccount) {
 }
 
 export default Ember.Object.extend({
-  createToken: createToken,
-  createBankAccountToken: createBankAccountToken,
+  createToken: createCardTokenDeprecated,
+  card: {
+    createToken: createCardToken,
+  },
+  bankAccount: {
+    createToken: createBankAccountToken,
+  }
 });
