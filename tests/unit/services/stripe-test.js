@@ -17,7 +17,47 @@ var cc = {
   address_zip: 12345
 };
 
-test('createToken sets the token and returns a promise', function(assert) {
+test('card.createToken sets the token and returns a promise', function(assert) {
+  var service = this.subject();
+  var response = {
+    id: 'the_token'
+  };
+
+  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+    assert.equal(card, cc, 'called with sample creditcard');
+    cb(200, response);
+  });
+
+  return service.card.createToken(cc)
+    .then(function(res) {
+      assert.equal(res.id, 'the_token');
+      createToken.restore();
+    });
+});
+
+test('card.createToken rejects the promise if Stripe errors', function(assert) {
+  var service = this.subject();
+  var response = {
+    error : {
+      code: "invalid_number",
+      message: "The 'exp_month' parameter should be an integer (instead, is Month).",
+      param: "exp_month",
+      type: "card_error"
+    }
+  };
+
+  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+    cb(402, response);
+  });
+
+  return service.card.createToken(cc)
+  .then(undefined, function(res) {
+    assert.equal(res, response, 'error passed');
+    createToken.restore();
+  });
+});
+
+test('createToken syntax is still supported', function(assert) {
   var service = this.subject();
   var response = {
     id: 'the_token'
@@ -35,27 +75,58 @@ test('createToken sets the token and returns a promise', function(assert) {
     });
 });
 
-test('createToken rejects the promise if Stripe errors', function(assert) {
+// Bank accounts
+
+var ba = {
+  country: 'US',
+  routingNumber: '123124112',
+  accountNumber: '125677688',
+};
+
+test('bankAccount.createToken sets the token and returns a promise', function(assert) {
+  var service = this.subject();
+  var response = {
+    id: 'the_token'
+  };
+
+  var createBankAccountToken = sinon.stub(Stripe.bankAccount,
+                                          'createToken',
+                                          function(bankAccount, cb) {
+    assert.equal(bankAccount, ba, 'called with sample bankAccount');
+    cb(200, response);
+  });
+
+  return service.bankAccount.createToken(ba)
+    .then(function(res) {
+      assert.equal(res.id, 'the_token');
+      createBankAccountToken.restore();
+    });
+});
+
+test('bankAccount.createToken rejects the promise if Stripe errors', function(assert) {
   var service = this.subject();
   var response = {
     error : {
       code: "invalid_number",
       message: "The 'exp_month' parameter should be an integer (instead, is Month).",
       param: "exp_month",
-      type: "card_error"
+      type: "bank_account_errror"
     }
   };
 
-  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+  var createBankAccountToken = sinon.stub(Stripe.bankAccount,
+                                          'createToken',
+                                          function(bankAccount, cb) {
     cb(402, response);
   });
 
-  return service.createToken(cc)
+  return service.bankAccount.createToken(ba)
   .then(undefined, function(res) {
     assert.equal(res, response, 'error passed');
-    createToken.restore();
+    createBankAccountToken.restore();
   });
 });
+
 
 // LOG_STRIPE_SERVICE is set to true in dummy app
 test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
