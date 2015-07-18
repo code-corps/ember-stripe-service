@@ -144,7 +144,7 @@ test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
     cb(200, response);
   });
 
-  return service.createToken(cc)
+  return service.card.createToken(cc)
   .then(function(err) {
     assert.ok(info.calledWith('StripeService: getStripeToken - card:', cc));
     createToken.restore();
