@@ -1,0 +1,1 @@
+export STRIPE_PUBLISHABLE_KEY="pk_test_thisWouldBeYourKey"

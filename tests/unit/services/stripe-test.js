@@ -89,12 +89,14 @@ test('bankAccount.createToken sets the token and returns a promise', function(as
     id: 'the_token'
   };
 
-  var createBankAccountToken = sinon.stub(Stripe.bankAccount,
-                                          'createToken',
-                                          function(bankAccount, cb) {
-    assert.equal(bankAccount, ba, 'called with sample bankAccount');
-    cb(200, response);
-  });
+  var createBankAccountToken = sinon.stub(
+    Stripe.bankAccount,
+    'createToken',
+    function(bankAccount, cb) {
+      assert.equal(bankAccount, ba, 'called with sample bankAccount');
+      cb(200, response);
+    }
+  );
 
   return service.bankAccount.createToken(ba)
     .then(function(res) {
@@ -114,11 +116,13 @@ test('bankAccount.createToken rejects the promise if Stripe errors', function(as
     }
   };
 
-  var createBankAccountToken = sinon.stub(Stripe.bankAccount,
-                                          'createToken',
-                                          function(bankAccount, cb) {
-    cb(402, response);
-  });
+  var createBankAccountToken = sinon.stub(
+    Stripe.bankAccount,
+    'createToken',
+    function(bankAccount, cb) {
+      cb(402, response);
+    }
+  );
 
   return service.bankAccount.createToken(ba)
   .then(undefined, function(res) {
