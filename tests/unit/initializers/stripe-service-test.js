@@ -3,6 +3,7 @@ import Ember from 'ember';
 import {module, test, skip} from 'qunit';
 import QUnit from 'qunit';
 import { initialize } from 'dummy/initializers/stripe-service';
+import env from 'dummy/config/environment';
 
 var container, application;
 
@@ -20,7 +21,7 @@ test('it sets stripe key', function(assert) {
   var setPublishableKey = sinon.stub(Stripe, 'setPublishableKey');
   initialize(container, application);
 
-  assert.ok(setPublishableKey.calledWith('pk_thisIsATestKey'));
+  assert.ok(setPublishableKey.calledWith(env.stripe.publishableKey));
   setPublishableKey.restore();
 });
 

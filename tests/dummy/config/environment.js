@@ -20,7 +20,7 @@ module.exports = function(environment) {
   };
 
   ENV.stripe = {
-    publishableKey: 'pk_thisIsATestKey'
+    publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || 'pk_thisIsATestKey'
   };
 
   ENV.LOG_STRIPE_SERVICE = true;

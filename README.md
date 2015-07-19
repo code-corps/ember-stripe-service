@@ -121,6 +121,10 @@ var ENV = {
 * `ember test`
 * `ember test --server`
 
+In order to run integration tests which use real Stripe tokens, the environment variable `STRIPE_PUBLISHABLE_KEY` must be set to use a real Stripe Publishable Key (either test or live).
+
+* `export STRIPE_PUBLISHABLE_KEY="pk_thisIsAKey" ember test`
+
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
 
