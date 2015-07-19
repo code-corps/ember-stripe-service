@@ -30,13 +30,10 @@ test('card.createToken sets the token and returns a promise', function(assert) {
 
   Ember.run(function(){
     service.card.createToken(cc)
-      .then(function(res) {
-        assert.ok(res.id, 'correct token set');
-      })
-      .catch(function(error) {
-        throw error;
-      });
+    .then(function(res) {
+      assert.ok(res.id, 'correct token set');
     });
+  });
 });
 
 test('bankAccount.createToken sets the token and returns a promise', function(assert) {
@@ -44,12 +41,9 @@ test('bankAccount.createToken sets the token and returns a promise', function(as
 
   Ember.run(function(){
     service.bankAccount.createToken(bankAccount)
-      .then(function(res) {
-        assert.ok(res.id, 'correct token set');
-      })
-      .catch(function(error) {
-        throw error;
-      });
+    .then(function(res) {
+      assert.ok(res.id, 'correct token set');
     });
+  });
 });
 
