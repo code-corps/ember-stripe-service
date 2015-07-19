@@ -31,22 +31,17 @@ function debug() {
 function createCardToken (card) {
   debug('card.createToken:', card);
 
-  // manually start Ember loop
-  Ember.run.begin();
-
   return new Ember.RSVP.Promise(function (resolve, reject) {
     Stripe.card.createToken(card, function (status, response) {
 
       debug('card.createToken handler - status %s, response:', status, response);
 
       if (response.error) {
-        reject(response);
-        return Ember.run.end();
+        return Ember.run(null, reject, response);
       }
 
-      resolve(response);
+      Ember.run(null, resolve, response);
 
-      Ember.run.end();
     });
   });
 }
@@ -74,22 +69,16 @@ function createCardTokenDeprecated(card) {
 function createBankAccountToken(bankAccount) {
   debug('bankAccount.createToken:', bankAccount);
 
-  // manually start Ember loop
-  Ember.run.begin();
-
   return new Ember.RSVP.Promise(function (resolve, reject) {
     Stripe.bankAccount.createToken(bankAccount, function (status, response) {
 
       debug('bankAccount.createToken handler - status %s, response:', status, response);
 
       if (response.error) {
-        reject(response);
-        return Ember.run.end();
+        return Ember.run(null, reject, response);
       }
 
-      resolve(response);
-
-      Ember.run.end();
+      Ember.run(null, resolve, response);
     });
   });
 }
