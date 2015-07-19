@@ -58,24 +58,6 @@ test('card.createToken rejects the promise if Stripe errors', function(assert) {
   });
 });
 
-test('createToken syntax is still supported', function(assert) {
-  var service = this.subject();
-  var response = {
-    id: 'the_token'
-  };
-
-  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
-    assert.equal(card, cc, 'called with sample creditcard');
-    cb(200, response);
-  });
-
-  return service.createToken(cc)
-    .then(function(res) {
-      assert.equal(res.id, 'the_token');
-      createToken.restore();
-    });
-});
-
 // Bank accounts
 
 var ba = {
