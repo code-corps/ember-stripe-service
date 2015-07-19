@@ -1,6 +1,7 @@
-/* global sinon, Stripe */
+/* global Stripe */
 import Ember from 'ember';
-import {module, test, skip} from 'qunit';
+import sinon from 'sinon';
+import {module, test} from 'qunit';
 import QUnit from 'qunit';
 import { initialize } from 'dummy/initializers/stripe-service';
 import env from 'dummy/config/environment';

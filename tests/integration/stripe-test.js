@@ -1,8 +1,7 @@
-/* global sinon, Stripe */
+/* global Stripe */
 
 import Ember from 'ember';
 import { moduleFor, test } from 'ember-qunit';
-import QUnit from 'qunit';
 import env from 'dummy/config/environment';
 
 moduleFor('service:stripe', '[integration] - StripeService', {

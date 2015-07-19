@@ -2,7 +2,6 @@
 /* global require, module */
 
 var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
-var vendor = 'bower_components';
 
 var app = new EmberAddon();
 
@@ -18,9 +17,5 @@ var app = new EmberAddon();
 // modules that you would like to import into your application
 // please specify an object with the list of modules as keys
 // along with the exports of each module as its value.
-
-if (app.env === 'development' || app.env === 'test') {
-  app.import(vendor + '/sinonjs/sinon.js');
-}
 
 module.exports = app.toTree();

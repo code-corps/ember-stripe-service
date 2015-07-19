@@ -1,6 +1,7 @@
-/* global sinon, Stripe */
+/* global Stripe */
 
 import Ember from 'ember';
+import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
 import QUnit from 'qunit';
 
@@ -145,7 +146,7 @@ test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
   });
 
   return service.card.createToken(cc)
-  .then(function(err) {
+  .then(function() {
     assert.ok(info.calledWith('StripeService: getStripeToken - card:', cc));
     createToken.restore();
     info.restore();
