@@ -74,14 +74,25 @@ function createBankAccountToken(bankAccount) {
  * Expose module
  */
 export default Ember.Service.extend({
+  init() {
+    this._super(...arguments);
+    this._checkForAndAddCardFn('cardType', Stripe.card.cardType);
+    this._checkForAndAddCardFn('validateCardNumber', Stripe.card.validateCardNumber);
+    this._checkForAndAddCardFn('validateCVC', Stripe.card.validateCVC);
+    this._checkForAndAddCardFn('validateExpiry', Stripe.card.validateExpiry);
+  },
   card: {
-    createToken: createCardToken,
-    cardType: Stripe.card.cardType,
-    validateCardNumber: Stripe.card.validateCardNumber,
-    validateCVC: Stripe.card.validateCVC,
-    validateExpiry: Stripe.card.validateExpiry
+    createToken: createCardToken
   },
   bankAccount: {
     createToken: createBankAccountToken,
+  },
+  _checkForAndAddCardFn(name, fn) {
+    if (Ember.isEqual(Ember.typeOf(Stripe.card[name]), 'function')) {
+      this.card[name] = fn;
+    } else {
+      this.card[name] = Ember.K;
+      Ember.Logger.error(`ember-cli-stripe: ${name} on Stripe.card is no longer available`);
+    }
   }
 });
