@@ -10,6 +10,7 @@
 - initializes stripe with publishable key
 - injects service in controllers which provides promisified method for `Stripe.card.createToken`
 - provides debugging logs for easy troubleshooting
+- client side validations for card number, expiration dates, card type and CVC
 
 ## Installation
 
@@ -115,6 +116,15 @@ var ENV = {
   // more config ...
 }
 ````
+## Client-side Validations
+Stripe has a few client-side validation helpers. See more information
+[here](https://stripe.com/docs/stripe.js?#card-validation-helpers)
+
+* `validateCardNumber` - Checks that the number is formatted correctly and passes the Luhn check.
+* `validateExpiry` - Checks whether or not the expiration date represents an actual month in the future.
+* `validateCVC` - Checks whether or not the supplied number could be a valid verification code.
+* `cardType` - Returns the type of the card as a string. The possible types are "Visa", "MasterCard", "American
+  Express", "Discover", "Diners Club", and "JCB". If a card isn't recognized, the return value is "Unknown".
 
 ## Running Tests
 
