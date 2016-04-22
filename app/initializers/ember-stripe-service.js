@@ -1,10 +1,13 @@
 /* global Stripe */
 import Ember from 'ember';
 import config from '../config/environment';
-var debug = config.LOG_STRIPE_SERVICE;
 
 export function initialize() {
-  if (debug) {
+  const application = arguments[1] || arguments[0];
+  application.register('config:ember-stripe-service', config, { instantiate: false });
+  application.inject('service:stripe', 'config', 'config:ember-stripe-service');
+
+  if (config.LOG_STRIPE_SERVICE) {
     Ember.Logger.info('StripeService: initialize');
   }
 
@@ -13,9 +16,10 @@ export function initialize() {
   }
 
   Stripe.setPublishableKey(config.stripe.publishableKey);
+
 }
 
 export default {
-  name: 'stripe',
+  name: 'ember-stripe-stripe',
   initialize: initialize
 };

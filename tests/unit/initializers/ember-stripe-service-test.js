@@ -1,14 +1,12 @@
 /* global Stripe */
 import Ember from 'ember';
 import sinon from 'sinon';
-import {module, test} from 'qunit';
-import QUnit from 'qunit';
-import { initialize } from 'dummy/initializers/stripe-service';
+import { module, test } from 'qunit';
+import { initialize } from 'dummy/initializers/ember-stripe-service';
 import env from 'dummy/config/environment';
 
 var container, application;
-
-module('StripeServiceInitializer', {
+module('Unit | Initializer | Stripe Service Initializer', {
   beforeEach: function() {
     Ember.run(function() {
       application = Ember.Application.create();
@@ -34,8 +32,3 @@ test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
   assert.ok(info.calledWith('StripeService: initialize'));
   info.restore();
 });
-
-/**
- * @todo figure out how to change env variables at runtime
- */
-QUnit.skip('no logs are generated if LOG_STRIPE_SERVICE is not set');
