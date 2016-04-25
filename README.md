@@ -135,6 +135,11 @@ In order to run integration tests which use real Stripe tokens, the environment 
 
 * `export STRIPE_PUBLISHABLE_KEY="pk_thisIsAKey" ember test`
 
+This repo comes with a `envrc.example` file, which uses the [direnv](http://direnv.net/) tool to manage directory-local environment variables. To use direnv to set the `STRIPE_PUBLISHABLE_KEY` environment variable, install and enable `direnv`, make a copy of `envrc.example` and name it `.envrc`, and add your key to that file. Note that `.envrc` is ignored by git, and thus will not ever be checked into this repository.
+
+You can also use any other tool you'd like to manage setting your environment variable.
+
+You can get the test key used to run this repo's integration tests by looking at the output from the latest Travis build.
 
 For more information on using ember-cli, visit [http://www.ember-cli.com/](http://www.ember-cli.com/).
 
