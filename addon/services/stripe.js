@@ -13,6 +13,10 @@ export default Ember.Service.extend({
       createToken: this._createBankAccountToken.bind(this)
     };
 
+    this.piiData = {
+      createToken: this._createPiiDataToken.bind(this)
+    };
+
     this._checkForAndAddCardFn('cardType', Stripe.card.cardType);
     this._checkForAndAddCardFn('validateCardNumber', Stripe.card.validateCardNumber);
     this._checkForAndAddCardFn('validateCVC', Stripe.card.validateCVC);
@@ -64,6 +68,30 @@ export default Ember.Service.extend({
         }
       });
     });
+  },
+
+  /**
+   * Creates a piiData token using Stripe.js API, exposed as `piiData.createToken`
+   * @param  {object} piiData  PiiData
+   * @return {promise}         Returns a promise that holds response, see stripe.js docs for details
+   *                           status is not being returned at the moment but it can be logged
+   */
+  _createPiiDataToken(piiData) {
+    this.debug('piiData.createToken:', piiData);
+
+    return new Ember.RSVP.Promise((resolve, reject) => {
+      Stripe.piiData.createToken(piiData, (status, response) => {
+
+        this.debug('piiData.createToken handler - status %s, response:', status, response);
+
+        if (response.error) {
+          reject(response);
+        } else {
+          resolve(response);
+        }
+      });
+    });
+
   },
 
   /**

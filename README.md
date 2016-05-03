@@ -106,6 +106,35 @@ The interface is similar for bank account tokens:
 })
 ````
 
+## Creating Stripe Tokens for PII Data
+
+The interface is similar yet again for PII data tokens:
+
+````javascript
+
+    // obtain access to the injected service
+    var stripe = this.get('stripe');
+
+    var piiData = {
+      personalIdNumber: '123456789'
+    }
+
+    return stripe.piiData.createToken(piiData).then(function(response) {
+      // you get access to your newly created token here
+      customer.set('personalIdNumberStripeToken', response.id);
+      return customer.save();
+    })
+    .catch(response) {
+      // if there was an error retrieving the token you could get it here
+
+      if (response.error.type === 'invalid_request_error') {
+        // show an error in the form
+      }
+    }
+  }
+})
+````
+
 ## Debugging
 By setting `LOG_STRIPE_SERVICE` to true in your application configuration you can enable some debugging messages from the service
 
