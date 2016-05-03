@@ -109,3 +109,54 @@ test('bankAccount.createToken rejects the promise if Stripe errors', function(as
       createBankAccountToken.restore();
     });
 });
+
+// PII Data
+//
+var pii = {
+  personalIdNumber: '123456779'
+};
+
+test('piiData.createToken sets the token and returns a promise', function(assert) {
+  var service = this.subject();
+  var response = {
+    id: 'the_token'
+  };
+
+  var createPiiDataToken = sinon.stub(
+    Stripe.piiData,
+    'createToken',
+    function(piiData, cb) {
+      assert.equal(piiData, pii, 'called with sample piiData');
+      cb(200, response);
+    }
+  );
+
+  return service.piiData.createToken(pii)
+    .then(function(res) {
+      assert.equal(res.id, 'the_token');
+      createPiiDataToken.restore();
+    });
+});
+
+test('piiData.createToken rejects the promise if Stripe errors', function(assert) {
+  var service = this.subject();
+  var response = {
+    error : {
+      type: "api_error"
+    }
+  };
+
+  var createPiiDataToken = sinon.stub(
+    Stripe.piiData,
+    'createToken',
+    function(piiData, cb) {
+      cb(500, response);
+    }
+  );
+
+  return service.piiData.createToken(ba)
+    .catch((res) => {
+      assert.equal(res, response, 'error passed');
+      createPiiDataToken.restore();
+    });
+});
