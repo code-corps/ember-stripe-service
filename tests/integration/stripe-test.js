@@ -3,7 +3,7 @@
 import { moduleFor, test } from 'ember-qunit';
 import env from 'dummy/config/environment';
 
-moduleFor('service:stripe', '[integration] - StripeService', {
+moduleFor('service:stripe', 'Integration | Stripe service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });
@@ -41,4 +41,3 @@ test('bankAccount.createToken sets the token and returns a promise', function(as
     assert.ok(res.id, 'correct token set');
   });
 });
-

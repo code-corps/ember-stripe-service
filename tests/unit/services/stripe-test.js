@@ -1,16 +1,13 @@
 /* global Stripe */
-
-import Ember from 'ember';
 import sinon from 'sinon';
 import { moduleFor, test } from 'ember-qunit';
-import QUnit from 'qunit';
 
-moduleFor('service:stripe', 'StripeService', {
+moduleFor('service:stripe', 'Unit | Services | Stripe service', {
   // Specify the other units that are required for this test.
   // needs: ['service:foo']
 });
 
-var cc = {
+let cc = {
   number: 4242424242424242,
   exp_year: 2018,
   exp_month: 10,
@@ -18,27 +15,33 @@ var cc = {
   address_zip: 12345
 };
 
+let ba = {
+  country: 'US',
+  routingNumber: '123124112',
+  accountNumber: '125677688',
+};
+
 test('card.createToken sets the token and returns a promise', function(assert) {
-  var service = this.subject();
-  var response = {
+  let service = this.subject();
+  let response = {
     id: 'the_token'
   };
 
-  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+  let createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
     assert.equal(card, cc, 'called with sample creditcard');
     cb(200, response);
   });
 
   return service.card.createToken(cc)
-    .then(function(res) {
+    .then((res) => {
       assert.equal(res.id, 'the_token');
       createToken.restore();
     });
 });
 
 test('card.createToken rejects the promise if Stripe errors', function(assert) {
-  var service = this.subject();
-  var response = {
+  let service = this.subject();
+  let response = {
     error : {
       code: "invalid_number",
       message: "The 'exp_month' parameter should be an integer (instead, is Month).",
@@ -47,50 +50,43 @@ test('card.createToken rejects the promise if Stripe errors', function(assert) {
     }
   };
 
-  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+  let createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
     cb(402, response);
   });
 
   return service.card.createToken(cc)
-  .then(undefined, function(res) {
-    assert.equal(res, response, 'error passed');
-    createToken.restore();
-  });
+    .catch((res) => {
+      assert.deepEqual(res, response, 'error passed');
+      createToken.restore();
+    });
 });
 
 // Bank accounts
-
-var ba = {
-  country: 'US',
-  routingNumber: '123124112',
-  accountNumber: '125677688',
-};
-
 test('bankAccount.createToken sets the token and returns a promise', function(assert) {
-  var service = this.subject();
-  var response = {
+  let service = this.subject();
+  let response = {
     id: 'the_token'
   };
 
-  var createBankAccountToken = sinon.stub(
+  let createBankAccountToken = sinon.stub(
     Stripe.bankAccount,
     'createToken',
-    function(bankAccount, cb) {
+    (bankAccount, cb) => {
       assert.equal(bankAccount, ba, 'called with sample bankAccount');
       cb(200, response);
     }
   );
 
   return service.bankAccount.createToken(ba)
-    .then(function(res) {
+    .then((res) => {
       assert.equal(res.id, 'the_token');
       createBankAccountToken.restore();
     });
 });
 
 test('bankAccount.createToken rejects the promise if Stripe errors', function(assert) {
-  var service = this.subject();
-  var response = {
+  let service = this.subject();
+  let response = {
     error : {
       code: "invalid_number",
       message: "The 'exp_month' parameter should be an integer (instead, is Month).",
@@ -99,7 +95,7 @@ test('bankAccount.createToken rejects the promise if Stripe errors', function(as
     }
   };
 
-  var createBankAccountToken = sinon.stub(
+  let createBankAccountToken = sinon.stub(
     Stripe.bankAccount,
     'createToken',
     function(bankAccount, cb) {
@@ -108,35 +104,8 @@ test('bankAccount.createToken rejects the promise if Stripe errors', function(as
   );
 
   return service.bankAccount.createToken(ba)
-  .then(undefined, function(res) {
-    assert.equal(res, response, 'error passed');
-    createBankAccountToken.restore();
-  });
+    .catch((res) => {
+      assert.equal(res, response, 'error passed');
+      createBankAccountToken.restore();
+    });
 });
-
-
-// LOG_STRIPE_SERVICE is set to true in dummy app
-test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
-  var service = this.subject();
-  var info = sinon.stub(Ember.Logger, 'info');
-
-  var createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
-    var response = {
-      id: 'my id'
-    };
-    cb(200, response);
-  });
-
-  return service.card.createToken(cc)
-  .then(function() {
-    assert.ok(info.called);
-    createToken.restore();
-    info.restore();
-  });
-});
-
-/**
- * @todo figure out how to change env variables at runtime
- */
-QUnit.skip('it logs if LOG_STRIPE_SERVICE is false');
-QUnit.skip('it throws an error if config.stripe.publishableKey is not set');
