@@ -10,15 +10,15 @@
     "build": "ember build",
     "test": "ember try:testall"
   },
-  "repository": "https://github.com/ride/ember-stripe-service",
+  "repository": "https://github.com/buritica/ember-stripe-service",
   "engines": {
     "node": ">= 0.10.0"
   },
-  "author": "Juan Pablo Buritica <juan@ride.com>",
+  "author": "Juan Pablo Buritica <buritica@gmail.com>",
   "contributors": [
     {
       "name": "Alex Urbano",
-      "email": "alex.urbano@ride.com"
+      "email": "asgaroth@ride.com"
     },
     {
       "name": "Sam Selikoff",
