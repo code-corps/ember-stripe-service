@@ -1,5 +1,5 @@
 # ember-stripe-service
-[![Build Status](https://travis-ci.org/code-corps/ember-stripe-service.svg?branch=master)](https://travis-ci.org/code-corps/ember-stripe-service) [![npm version](https://badge.fury.io/js/ember-stripe-service.svg)](https://badge.fury.io/js/ember-stripe-service) [![Ember Observer Score](https://emberobserver.com/badges/ember-stripe-service.svg)](https://emberobserver.com/addons/ember-stripe-service)
+[![Build Status](https://travis-ci.org/code-corps/ember-stripe-service.svg?branch=master)](https://travis-ci.org/code-corps/ember-stripe-service) [![npm version](https://badge.fury.io/js/ember-stripe-service.svg)](https://badge.fury.io/js/ember-stripe-service) [![Ember Observer Score](https://emberobserver.com/badges/ember-stripe-service.svg)](https://emberobserver.com/addons/ember-stripe-service) [![Inline docs](http://inch-ci.org/github/code-corps/ember-stripe-service.svg?branch=master&style=shields)](http://inch-ci.org/github/code-corps/ember-stripe-service)
 
 ## Description
 `ember-stripe-service` is an easy way to add Stripe.js library to your ember-cli project without having to deal with manually setting the script tag
