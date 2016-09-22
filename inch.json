@@ -1,0 +1,8 @@
+{
+  "files": {
+    "included": [
+      "app/**/*.js",
+      "addon/**/*.js"
+    ]
+  }
+}
