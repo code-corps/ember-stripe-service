@@ -8,10 +8,15 @@ sudo: false
 cache:
   directories:
     - node_modules
+    - $HOME/.npm
+    - $HOME/.cache # includes bowers cache
 
 env:
   - EMBER_TRY_SCENARIO=default
   - EMBER_TRY_SCENARIO=ember-1.13
+  # we recommend testing LTS's and latest stable release (bonus points to beta/canary)
+  - EMBER_TRY_SCENARIO=ember-lts-2.4
+  - EMBER_TRY_SCENARIO=ember-lts-2.8
   - EMBER_TRY_SCENARIO=ember-release
   - EMBER_TRY_SCENARIO=ember-beta
   - EMBER_TRY_SCENARIO=ember-canary
@@ -23,11 +28,14 @@ matrix:
 
 before_install:
   - export PATH=/usr/local/phantomjs-2.0.0/bin:$PATH
-  - "npm config set spin false"
-  - "npm install -g npm@^2"
+  - npm config set spin false
+  - npm install -g npm@^2
+  - npm install -g bower
+  - bower --version
+  - npm install phantomjs-prebuilt
+  - node_modules/phantomjs-prebuilt/bin/phantomjs --version
 
 install:
-  - npm install -g bower
   - npm install
   - bower install
   - mkdir travis-phantomjs
@@ -36,4 +44,6 @@ install:
   - export PATH=$PWD/travis-phantomjs:$PATH
 
 script:
-  - ember try $EMBER_TRY_SCENARIO test
+  # Usually, it's ok to finish the test scenario without reverting
+  #  to the addon's original dependency state, skipping "cleanup".
+  - ember try:one $EMBER_TRY_SCENARIO test --skip-cleanup
