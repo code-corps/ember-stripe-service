@@ -34,7 +34,7 @@ test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
   info.restore();
 });
 
-test('it must use the stripe-mock if is runing in FastBoot and Stripe is undefined', function(assert) {
+test('it must use stripe-mock if it\'s runing in FastBoot and Stripe is undefined', function(assert) {
   var setPublishableKey = sinon.stub(StripeMock, 'setPublishableKey');
   var _Stripe = Stripe;
   window.Stripe = undefined;
