@@ -33,7 +33,6 @@ test('card.createToken sets the token and returns a promise', function(assert) {
 
   return service.card.createToken(cc)
   .then(function(res) {
-    console.log('=============>', res);
     assert.ok(res.id, 'correct token set');
   });
 });
