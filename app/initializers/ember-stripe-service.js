@@ -1,6 +1,7 @@
 /* global Stripe */
 import Ember from 'ember';
 import config from '../config/environment';
+import StripeMock from '../services/stripe-mock';
 
 export function initialize() {
   const application = arguments[1] || arguments[0];
@@ -13,6 +14,10 @@ export function initialize() {
 
   if (!config.stripe.publishableKey) {
     throw new Ember.Error('StripeService: Missing Stripe key, please set `ENV.stripe.publishableKey` in config.environment.js');
+  }
+
+  if (typeof FastBoot !== 'undefined' && typeof Stripe === 'undefined') {
+    window.Stripe = StripeMock;
   }
 
   Stripe.setPublishableKey(config.stripe.publishableKey);
