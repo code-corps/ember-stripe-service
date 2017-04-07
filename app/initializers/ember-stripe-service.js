@@ -21,7 +21,6 @@ export function initialize() {
   }
 
   Stripe.setPublishableKey(config.stripe.publishableKey);
-
 }
 
 export default {
