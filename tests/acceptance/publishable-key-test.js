@@ -8,7 +8,7 @@ test('it throws an error if config.stripe.publishableKey is not set', function(a
   let originalKey = config.stripe.publishableKey;
   config.stripe.publishableKey = undefined;
 
-  assert.throws(function() {
+  assert.expectAssertion(function() {
     startApp();
   }, /Missing Stripe key/);
 
