@@ -1,14 +1,15 @@
+const lambda = function () {};
 const promiseTokenLambda = function  () {
   return Ember.RSVP.Promise.resolve({ id: true });
 };
 
 export default {
-  setPublishableKey: Ember.K,
+  setPublishableKey: lambda,
   card: {
-    cardType: Ember.K,
-    validateCardNumber: Ember.K,
-    validateCVC: Ember.K,
-    validateExpiry: Ember.K,
+    cardType: lambda,
+    validateCardNumber: lambda,
+    validateCVC: lambda,
+    validateExpiry: lambda,
     createToken: promiseTokenLambda
   },
   bankAccount: {
