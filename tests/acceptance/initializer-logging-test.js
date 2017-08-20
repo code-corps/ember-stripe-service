@@ -18,6 +18,7 @@ module('Acceptance | Initializer logging', {
 
 test('it logs on app boot when LOG_STRIPE_SERVICE is true', function(assert) {
   config.LOG_STRIPE_SERVICE = true;
+  delete config.stripe.debug;
 
   let application = startApp();
 
@@ -28,6 +29,7 @@ test('it logs on app boot when LOG_STRIPE_SERVICE is true', function(assert) {
 
 test('it doesn\'t log on app boot when LOG_STRIPE_SERVICE is false', function(assert) {
   config.LOG_STRIPE_SERVICE = false;
+  delete config.stripe.debug;
 
   let application = startApp();
 

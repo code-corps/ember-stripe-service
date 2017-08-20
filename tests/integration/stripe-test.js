@@ -1,56 +1,66 @@
-/* global Stripe */
-
 import { moduleFor, test } from 'ember-qunit';
 import env from 'dummy/config/environment';
+import StripeMock from 'ember-stripe-service/utils/stripe-mock';
+import sinon from 'sinon';
 
 moduleFor('service:stripe', 'Integration | Stripe service', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:foo']
+  beforeEach() {
+    window.Stripe = StripeMock;
+
+    this.stripe = this.subject({
+      config: {
+        mock: true,
+        publishableKey: env.stripe.publishableKey
+      }
+    });
+  }
 });
 
-var cc = {
-  number: 4242424242424242,
-  exp_year: 2018,
-  exp_month: 10,
-  cvc: 123,
-  address_zip: 12345
-};
+test('it sets the publishable key', function(assert) {
+  var setPublishableKey = sinon.stub(StripeMock, 'setPublishableKey');
 
-var bankAccount= {
-  country: 'US',
-  routingNumber: '111000025',
-  accountNumber: '000123456789',
-};
+  this.stripe.set('didConfigure', false);
+  this.stripe.configure();
 
-var piiData = {
-  personalIdNumber: '123456789'
-};
-
-Stripe.setPublishableKey(env.stripe.publishableKey);
+  assert.ok(setPublishableKey.calledWith(env.stripe.publishableKey));
+  setPublishableKey.restore();
+});
 
 test('card.createToken sets the token and returns a promise', function(assert) {
-  var service = this.subject();
+  let cc = {
+    number: 4242424242424242,
+    exp_year: 2018,
+    exp_month: 10,
+    cvc: 123,
+    address_zip: 12345
+  };
 
-  return service.card.createToken(cc)
-  .then(function(res) {
-    assert.ok(res.id, 'correct token set');
-  });
+  return this.stripe.card.createToken(cc)
+    .then(function(res) {
+      assert.ok(res.id, 'correct token set');
+    });
 });
 
 test('bankAccount.createToken sets the token and returns a promise', function(assert) {
-  var service = this.subject();
+  let bankAccount = {
+    country: 'US',
+    routingNumber: '111000025',
+    accountNumber: '000123456789',
+  };
 
-  return service.bankAccount.createToken(bankAccount)
-  .then(function(res) {
-    assert.ok(res.id, 'correct token set');
-  });
+  return this.stripe.bankAccount.createToken(bankAccount)
+    .then(function(res) {
+      assert.ok(res.id, 'correct token set');
+    });
 });
 
 test('piiData.createToken sets the token and returns a promise', function(assert) {
-  var service = this.subject();
+  let piiData = {
+    personalIdNumber: '123456789'
+  };
 
-  return service.piiData.createToken(piiData)
-  .then(function(res) {
-    assert.ok(res.id, 'correct token set');
-  });
+  return this.stripe.piiData.createToken(piiData)
+    .then(function(res) {
+      assert.ok(res.id, 'correct token set');
+    });
 });

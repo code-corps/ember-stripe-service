@@ -1,26 +1,83 @@
 /* global Stripe */
 import Ember from 'ember';
+import loadScript from 'ember-stripe-service/utils/load-script';
 
 export default Ember.Service.extend({
+  didConfigure: false,
+  config: null,
+
+  lazyLoad: Ember.computed.readOnly('config.lazyLoad'),
+  mock: Ember.computed.readOnly('config.mock'),
+  publishableKey: Ember.computed.readOnly('config.publishableKey'),
+  debuggingEnabled: Ember.computed.readOnly('config.debug'),
+
+  runCount: 0,
+
   init() {
     this._super(...arguments);
 
-    this.card = {
-      createToken: this._createCardToken.bind(this)
-    };
+    let lazyLoad = this.get('lazyLoad');
+    let mock = this.get('mock');
 
-    this.bankAccount = {
-      createToken: this._createBankAccountToken.bind(this)
-    };
+    if (Ember.testing) {
+      this._waiter = () => {
+        return this.get('runCount') === 0;
+      };
+      Ember.Test.registerWaiter(this._waiter);
+    }
 
-    this.piiData = {
-      createToken: this._createPiiDataToken.bind(this)
-    };
+    if (!lazyLoad || mock) {
+      this.configure();
+    }
+  },
 
-    this._checkForAndAddCardFn('cardType', Stripe.card.cardType);
-    this._checkForAndAddCardFn('validateCardNumber', Stripe.card.validateCardNumber);
-    this._checkForAndAddCardFn('validateCVC', Stripe.card.validateCVC);
-    this._checkForAndAddCardFn('validateExpiry', Stripe.card.validateExpiry);
+  load() {
+    let lazyLoad = this.get('lazyLoad');
+    let mock = this.get('mock');
+
+    let loadJs = lazyLoad && !mock?
+      loadScript("https://js.stripe.com/v2/") :
+      Ember.RSVP.resolve();
+
+    return loadJs.then(() => {
+      this.configure();
+    });
+  },
+
+  configure() {
+    let didConfigure = this.get('didConfigure');
+
+    if (!didConfigure) {
+      let publishableKey = this.get('publishableKey');
+      Stripe.setPublishableKey(publishableKey);
+
+      this.card = {
+        createToken: this._createCardToken.bind(this)
+      };
+
+      this.bankAccount = {
+        createToken: this._createBankAccountToken.bind(this)
+      };
+
+      this.piiData = {
+        createToken: this._createPiiDataToken.bind(this)
+      };
+
+      this._checkForAndAddCardFn('cardType', Stripe.card.cardType);
+      this._checkForAndAddCardFn('validateCardNumber', Stripe.card.validateCardNumber);
+      this._checkForAndAddCardFn('validateCVC', Stripe.card.validateCVC);
+      this._checkForAndAddCardFn('validateExpiry', Stripe.card.validateExpiry);
+
+      this.set('didConfigure', true);
+    }
+  },
+
+  stripePromise(callback) {
+    return this.load().then(() => {
+      return new Ember.RSVP.Promise((resolve, reject) => {
+        callback(resolve, reject);
+      });
+    });
   },
 
   /**
@@ -31,10 +88,10 @@ export default Ember.Service.extend({
   */
   _createCardToken(card) {
     this.debug('card.createToken:', card);
+    this.incrementProperty('runCount');
 
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return this.stripePromise((resolve, reject) => {
       Stripe.card.createToken(card, (status, response) => {
-
         this.debug('card.createToken handler - status %s, response:', status, response);
 
         if (response.error) {
@@ -42,6 +99,8 @@ export default Ember.Service.extend({
         } else {
           resolve(response);
         }
+
+        this.decrementProperty('runCount');
       });
     });
   },
@@ -55,8 +114,9 @@ export default Ember.Service.extend({
   */
   _createBankAccountToken(bankAccount) {
     this.debug('bankAccount.createToken:', bankAccount);
+    this.incrementProperty('runCount');
 
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return this.stripePromise((resolve, reject) => {
       Stripe.bankAccount.createToken(bankAccount, (status, response) => {
 
         this.debug('bankAccount.createToken handler - status %s, response:', status, response);
@@ -66,6 +126,8 @@ export default Ember.Service.extend({
         } else {
           resolve(response);
         }
+
+        this.decrementProperty('runCount');
       });
     });
   },
@@ -78,8 +140,9 @@ export default Ember.Service.extend({
    */
   _createPiiDataToken(piiData) {
     this.debug('piiData.createToken:', piiData);
+    this.incrementProperty('runCount');
 
-    return new Ember.RSVP.Promise((resolve, reject) => {
+    return this.stripePromise((resolve, reject) => {
       Stripe.piiData.createToken(piiData, (status, response) => {
 
         this.debug('piiData.createToken handler - status %s, response:', status, response);
@@ -89,13 +152,14 @@ export default Ember.Service.extend({
         } else {
           resolve(response);
         }
+        
+        this.decrementProperty('runCount');
       });
     });
-
   },
 
   /**
-   * Uses Ember.Logger.info to output service information if LOG_STRIPE_SERVICE is
+   * Uses Ember.Logger.info to output service information if debugging is
    * set
    *
    * notes:
@@ -103,8 +167,7 @@ export default Ember.Service.extend({
    * - pre-pends StripeService to all messages
    */
   debug() {
-    let config = this.get('config');
-    let debuggingEnabled = (config && typeof config.LOG_STRIPE_SERVICE !== 'undefined') ? config.LOG_STRIPE_SERVICE : false;
+    let debuggingEnabled = this.get('debuggingEnabled');
 
     if (debuggingEnabled) {
       let args = Array.prototype.slice.call(arguments);
@@ -117,7 +180,7 @@ export default Ember.Service.extend({
     if (Ember.isEqual(Ember.typeOf(Stripe.card[name]), 'function')) {
       this.card[name] = fn;
     } else {
-      this.card[name] = Ember.K;
+      this.card[name] = function() {};
       Ember.Logger.error(`ember-cli-stripe: ${name} on Stripe.card is no longer available`);
     }
   }
