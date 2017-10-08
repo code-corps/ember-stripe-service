@@ -35,7 +35,7 @@ export default Ember.Service.extend({
     let lazyLoad = this.get('lazyLoad');
     let mock = this.get('mock');
 
-    let loadJs = lazyLoad && !mock?
+    let loadJs = lazyLoad && !mock ?
       loadScript("https://js.stripe.com/v2/") :
       Ember.RSVP.resolve();
 
@@ -152,7 +152,7 @@ export default Ember.Service.extend({
         } else {
           resolve(response);
         }
-        
+
         this.decrementProperty('runCount');
       });
     });
