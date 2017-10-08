@@ -51,9 +51,5 @@ module.exports = function(environment) {
     ENV.stripe.mock = true;
   }
 
-  if (environment === 'production') {
-
-  }
-
   return ENV;
 };

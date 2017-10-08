@@ -17,10 +17,24 @@ module('Unit | Initializer | Stripe Service Initializer', {
 });
 
 test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
+  env.LOG_STRIPE_SERVICE = true;
+
   var info = sinon.stub(Ember.Logger, 'info');
   initialize(container, application);
 
   assert.ok(info.calledWith('StripeService: initialize'));
+  info.restore();
+});
+
+test('it turns on debugging when LOG_STRIPE_SERVICE is set in env config', function(assert) {
+  env.LOG_STRIPE_SERVICE = true;
+  env.stripe.debug = undefined; // act like this was never set
+
+  var info = sinon.stub(Ember.Logger, 'info');
+  initialize(container, application);
+
+  let stripeConfig = container.lookup('config:stripe');
+  assert.ok(stripeConfig.debug);
   info.restore();
 });
 
