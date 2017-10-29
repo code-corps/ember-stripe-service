@@ -11,6 +11,7 @@ If you have any questions, come :wave: hello in #e-stripe-service on the [Ember 
 - injects service in controllers which provides promisified method for `Stripe.card.createToken`
 - provides debugging logs for easy troubleshooting
 - client side validations for card number, expiration dates, card type and CVC
+- lazy load stripe.js
 
 ## Installation
 
@@ -27,9 +28,30 @@ In order to use Stripe you must set your [publishable key](https://dashboard.str
 
 ````javascript
 ENV.stripe = {
-  publishableKey: 'pk_thisIsATestKey'
+  publishableKey: 'pk_thisIsATestKey',
+  debug: false, // turn on debugging
+  lazyLoad: false, // lazy load stripe
+  mock: false // mock out stripe.js, good for offline testing
 };
 ````
+
+## Lazy loading
+
+If `lazyLoad` is set to turn Stripe.js will not be loaded until you call the `load()` function on the service. It's best to call this function in a route's beforeModel hook.
+
+```js
+// subscription page route
+
+import Ember from 'ember';
+
+export default Ember.Route.extend({
+  stripe: Ember.inject.service('stripe'),
+
+  beforeModel() {
+    return this.get('stripe').load();
+  }
+});
+```
 
 ## Creating Stripe Tokens for Cards
 
@@ -141,7 +163,9 @@ By setting `LOG_STRIPE_SERVICE` to true in your application configuration you ca
 ````javascript
 var ENV = {
   // some vars...
-  LOG_STRIPE_SERVICE: true,
+  stripe: {
+    debug: true
+  }
   // more config ...
 }
 ````

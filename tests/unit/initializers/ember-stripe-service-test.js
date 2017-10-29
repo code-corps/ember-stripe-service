@@ -1,10 +1,9 @@
-/* global Stripe */
 import Ember from 'ember';
 import sinon from 'sinon';
 import { module, test } from 'qunit';
 import { initialize } from 'dummy/initializers/ember-stripe-service';
 import env from 'dummy/config/environment';
-import StripeMock from 'dummy/services/stripe-mock';
+import StripeMock from 'ember-stripe-service/utils/stripe-mock';
 
 var container, application;
 module('Unit | Initializer | Stripe Service Initializer', {
@@ -17,16 +16,9 @@ module('Unit | Initializer | Stripe Service Initializer', {
   }
 });
 
-test('it sets stripe key', function(assert) {
-  var setPublishableKey = sinon.stub(Stripe, 'setPublishableKey');
-  initialize(container, application);
-
-  assert.ok(setPublishableKey.calledWith(env.stripe.publishableKey));
-  setPublishableKey.restore();
-});
-
-// LOG_STRIPE_SERVICE is set to true in dummy app
 test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
+  env.LOG_STRIPE_SERVICE = true;
+
   var info = sinon.stub(Ember.Logger, 'info');
   initialize(container, application);
 
@@ -34,15 +26,31 @@ test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
   info.restore();
 });
 
-test('it must use stripe-mock if it\'s runing in FastBoot and Stripe is undefined', function(assert) {
-  var setPublishableKey = sinon.stub(StripeMock, 'setPublishableKey');
-  var _Stripe = Stripe;
-  window.Stripe = undefined;
-  window.FastBoot = true;
+test('it turns on debugging when LOG_STRIPE_SERVICE is set in env config', function(assert) {
+  env.LOG_STRIPE_SERVICE = true;
+  env.stripe.debug = undefined; // act like this was never set
+
+  var info = sinon.stub(Ember.Logger, 'info');
   initialize(container, application);
 
+  let stripeConfig = container.lookup('config:stripe');
+  assert.ok(stripeConfig.debug);
+  info.restore();
+});
+
+test('it uses stripe-mock when runing in FastBoot', function(assert) {
+  window.FastBoot = true;
+
+  initialize(container, application);
+
+  assert.equal(window.Stripe, StripeMock);
   delete window.FastBoot;
-  window.Stripe = _Stripe;
-  assert.ok(setPublishableKey.calledWith(env.stripe.publishableKey));
-  setPublishableKey.restore();
+});
+
+test('it uses stripe-mock when mocking is turned on', function(assert) {
+  env.stripe.mock = true;
+
+  initialize(container, application);
+
+  assert.equal(window.Stripe, StripeMock);
 });
