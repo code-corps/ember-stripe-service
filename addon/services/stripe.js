@@ -1,15 +1,21 @@
 /* global Stripe */
+import { isEqual, typeOf } from '@ember/utils';
+
+import { resolve, Promise as EmberPromise } from 'rsvp';
+import { registerWaiter } from '@ember/test';
+import { readOnly } from '@ember/object/computed';
+import Service from '@ember/service';
 import Ember from 'ember';
 import loadScript from 'ember-stripe-service/utils/load-script';
 
-export default Ember.Service.extend({
+export default Service.extend({
   didConfigure: false,
   config: null,
 
-  lazyLoad: Ember.computed.readOnly('config.lazyLoad'),
-  mock: Ember.computed.readOnly('config.mock'),
-  publishableKey: Ember.computed.readOnly('config.publishableKey'),
-  debuggingEnabled: Ember.computed.readOnly('config.debug'),
+  lazyLoad: readOnly('config.lazyLoad'),
+  mock: readOnly('config.mock'),
+  publishableKey: readOnly('config.publishableKey'),
+  debuggingEnabled: readOnly('config.debug'),
 
   runCount: 0,
 
@@ -23,7 +29,7 @@ export default Ember.Service.extend({
       this._waiter = () => {
         return this.get('runCount') === 0;
       };
-      Ember.Test.registerWaiter(this._waiter);
+      registerWaiter(this._waiter);
     }
 
     if (!lazyLoad || mock) {
@@ -37,7 +43,7 @@ export default Ember.Service.extend({
 
     let loadJs = lazyLoad && !mock ?
       loadScript("https://js.stripe.com/v2/") :
-      Ember.RSVP.resolve();
+      resolve();
 
     return loadJs.then(() => {
       this.configure();
@@ -74,7 +80,7 @@ export default Ember.Service.extend({
 
   stripePromise(callback) {
     return this.load().then(() => {
-      return new Ember.RSVP.Promise((resolve, reject) => {
+      return new EmberPromise((resolve, reject) => {
         callback(resolve, reject);
       });
     });
@@ -177,7 +183,7 @@ export default Ember.Service.extend({
   },
 
   _checkForAndAddCardFn(name, fn) {
-    if (Ember.isEqual(Ember.typeOf(Stripe.card[name]), 'function')) {
+    if (isEqual(typeOf(Stripe.card[name]), 'function')) {
       this.card[name] = fn;
     } else {
       this.card[name] = function() {};
