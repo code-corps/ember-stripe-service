@@ -19,7 +19,7 @@ module('Integration | Stripe service', function(hooks) {
   });
 
   test('it sets the publishable key', function(assert) {
-    var setPublishableKey = sinon.stub(StripeMock, 'setPublishableKey');
+    let setPublishableKey = sinon.stub(StripeMock, 'setPublishableKey');
 
     this.stripe.set('didConfigure', false);
     this.stripe.configure();

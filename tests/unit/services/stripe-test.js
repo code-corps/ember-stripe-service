@@ -111,17 +111,17 @@ module('Unit | Services | Stripe service', function(hooks) {
 
   // PII Data
   //
-  var pii = {
+  let pii = {
     personalIdNumber: '123456779'
   };
 
   test('piiData.createToken sets the token and returns a promise', function(assert) {
-    var service = this.owner.lookup('service:stripe');
-    var response = {
+    let service = this.owner.lookup('service:stripe');
+    let response = {
       id: 'the_token'
     };
 
-    var createPiiDataToken = sinon.stub(
+    let createPiiDataToken = sinon.stub(
       Stripe.piiData,
       'createToken').callsFake(
       function(piiData, cb) {
@@ -138,14 +138,14 @@ module('Unit | Services | Stripe service', function(hooks) {
   });
 
   test('piiData.createToken rejects the promise if Stripe errors', function(assert) {
-    var service = this.owner.lookup('service:stripe');
-    var response = {
+    let service = this.owner.lookup('service:stripe');
+    let response = {
       error : {
         type: "api_error"
       }
     };
 
-    var createPiiDataToken = sinon.stub(
+    let createPiiDataToken = sinon.stub(
       Stripe.piiData,
       'createToken').callsFake(
       function(piiData, cb) {
