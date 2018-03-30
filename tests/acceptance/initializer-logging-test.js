@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { setupApplicationTest } from 'ember-qunit';
+import { setupTest } from 'ember-qunit';
 import Ember from 'ember';
 import sinon from 'sinon';
 import config from 'dummy/config/environment';
@@ -10,7 +10,7 @@ module('Acceptance | Initializer logging', function(hooks) {
     this._original_LOG_STRIPE_SERVICE = config.LOG_STRIPE_SERVICE;
   });
 
-  setupApplicationTest(hooks);
+  setupTest(hooks);
 
   hooks.afterEach(function() {
     this.info.restore();
