@@ -26,7 +26,7 @@ module('Unit | Services | Stripe service', function(hooks) {
       id: 'the_token'
     };
 
-    let createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+    let createToken = sinon.stub(Stripe.card, 'createToken').callsFake(function(card, cb) {
       assert.equal(card, cc, 'called with sample creditcard');
       cb(200, response);
     });
@@ -49,7 +49,7 @@ module('Unit | Services | Stripe service', function(hooks) {
       }
     };
 
-    let createToken = sinon.stub(Stripe.card, 'createToken', function(card, cb) {
+    let createToken = sinon.stub(Stripe.card, 'createToken').callsFake(function(card, cb) {
       cb(402, response);
     });
 
@@ -69,7 +69,7 @@ module('Unit | Services | Stripe service', function(hooks) {
 
     let createBankAccountToken = sinon.stub(
       Stripe.bankAccount,
-      'createToken',
+      'createToken').callsFake(
       (bankAccount, cb) => {
         assert.equal(bankAccount, ba, 'called with sample bankAccount');
         cb(200, response);
@@ -96,7 +96,7 @@ module('Unit | Services | Stripe service', function(hooks) {
 
     let createBankAccountToken = sinon.stub(
       Stripe.bankAccount,
-      'createToken',
+      'createToken').callsFake(
       function(bankAccount, cb) {
         cb(402, response);
       }
@@ -123,7 +123,7 @@ module('Unit | Services | Stripe service', function(hooks) {
 
     var createPiiDataToken = sinon.stub(
       Stripe.piiData,
-      'createToken',
+      'createToken').callsFake(
       function(piiData, cb) {
         assert.equal(piiData, pii, 'called with sample piiData');
         cb(200, response);
@@ -147,7 +147,7 @@ module('Unit | Services | Stripe service', function(hooks) {
 
     var createPiiDataToken = sinon.stub(
       Stripe.piiData,
-      'createToken',
+      'createToken').callsFake(
       function(piiData, cb) {
         cb(500, response);
       }
