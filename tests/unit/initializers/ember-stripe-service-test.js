@@ -4,53 +4,47 @@ import { module, test } from 'qunit';
 import { initialize } from 'dummy/initializers/ember-stripe-service';
 import env from 'dummy/config/environment';
 import StripeMock from 'ember-stripe-service/utils/stripe-mock';
+import { setupTest } from 'ember-qunit';
 
-var container, application;
-module('Unit | Initializer | Stripe Service Initializer', {
-  beforeEach: function() {
-    Ember.run(function() {
-      application = Ember.Application.create();
-      container = application.__container__;
-      application.deferReadiness();
-    });
-  }
-});
+module('Unit | Initializer | Stripe Service Initializer', function(hooks) {
+  setupTest(hooks);
 
-test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
-  env.LOG_STRIPE_SERVICE = true;
+  test('it logs when LOG_STRIPE_SERVICE is set in env config', function(assert) {
+    env.LOG_STRIPE_SERVICE = true;
 
-  var info = sinon.stub(Ember.Logger, 'info');
-  initialize(container, application);
+    let info = sinon.stub(Ember.Logger, 'info');
+    initialize(this.owner.__container__, this.owner);
 
-  assert.ok(info.calledWith('StripeService: initialize'));
-  info.restore();
-});
+    assert.ok(info.calledWith('StripeService: initialize'));
+    info.restore();
+  });
 
-test('it turns on debugging when LOG_STRIPE_SERVICE is set in env config', function(assert) {
-  env.LOG_STRIPE_SERVICE = true;
-  env.stripe.debug = undefined; // act like this was never set
+  test('it turns on debugging when LOG_STRIPE_SERVICE is set in env config', function(assert) {
+    env.LOG_STRIPE_SERVICE = true;
+    env.stripe.debug = undefined; // act like this was never set
 
-  var info = sinon.stub(Ember.Logger, 'info');
-  initialize(container, application);
+    let info = sinon.stub(Ember.Logger, 'info');
+    initialize(this.owner.__container__, this.owner);
 
-  let stripeConfig = container.lookup('config:stripe');
-  assert.ok(stripeConfig.debug);
-  info.restore();
-});
+    let stripeConfig = this.owner.__container__.lookup('config:stripe');
+    assert.ok(stripeConfig.debug);
+    info.restore();
+  });
 
-test('it uses stripe-mock when runing in FastBoot', function(assert) {
-  window.FastBoot = true;
+  test('it uses stripe-mock when runing in FastBoot', function(assert) {
+    window.FastBoot = true;
 
-  initialize(container, application);
+    initialize(this.owner.__container__, this.owner);
 
-  assert.equal(window.Stripe, StripeMock);
-  delete window.FastBoot;
-});
+    assert.equal(window.Stripe, StripeMock);
+    delete window.FastBoot;
+  });
 
-test('it uses stripe-mock when mocking is turned on', function(assert) {
-  env.stripe.mock = true;
+  test('it uses stripe-mock when mocking is turned on', function(assert) {
+    env.stripe.mock = true;
 
-  initialize(container, application);
+    initialize(this.owner.__container__, this.owner);
 
-  assert.equal(window.Stripe, StripeMock);
+    assert.equal(window.Stripe, StripeMock);
+  });
 });
