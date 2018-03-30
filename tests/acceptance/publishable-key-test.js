@@ -1,16 +1,20 @@
+import Application from '../../app';
+import { run } from '@ember/runloop';
 import { module, test } from 'qunit';
 import config from 'dummy/config/environment';
 import startApp from '../helpers/start-app';
 
-module('Acceptance | Publishable Key');
+module('Acceptance | Publishable Key', function() {
+  test('it throws an error if config.stripe.publishableKey is not set', function(assert) {
+    let originalKey = config.stripe.publishableKey;
+    config.stripe.publishableKey = undefined;
 
-test('it throws an error if config.stripe.publishableKey is not set', function(assert) {
-  let originalKey = config.stripe.publishableKey;
-  config.stripe.publishableKey = undefined;
+    assert.expectAssertion(function() {
+      run(() => {
+        Application.create();
+      });
+    }, /Missing Stripe key/);
 
-  assert.expectAssertion(function() {
-    startApp();
-  }, /Missing Stripe key/);
-
-  config.stripe.publishableKey = originalKey;
+    config.stripe.publishableKey = originalKey;
+  });
 });
