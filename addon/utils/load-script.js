@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { run } from '@ember/runloop';
+import { Promise as EmberPromise } from 'rsvp';
 
 /*
  * loadScript will load a JavaScript asset. Subsequent load
@@ -11,18 +12,18 @@ let loadedScripts = {};
 export default function loadScript(url) {
   let promise = loadedScripts[url];
   if (!promise) {
-    promise = new Ember.RSVP.Promise((resolve, reject) => {
+    promise = new EmberPromise((resolve, reject) => {
       let element = document.createElement('script');
       element.type = 'text/javascript';
       element.async = false;
       element.addEventListener('load', () => {
-        Ember.run(() => {
+        run(() => {
           resolve();
         });
       }, false);
       element.addEventListener('error', () => {
         let error = new Error(`Could not load script ${url}`);
-        Ember.run(() => {
+        run(() => {
           reject(error);
         });
       }, false);

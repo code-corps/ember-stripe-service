@@ -1,10 +1,12 @@
-import Ember from 'ember';
+import { on } from '@ember/object/evented';
+import { inject as service } from '@ember/service';
+import Controller from '@ember/controller';
 
-export default Ember.Controller.extend({
+export default Controller.extend({
 
-  stripe: Ember.inject.service(),
+  stripe: service(),
 
-  doSomething: Ember.on('init', function() {
+  doSomething: on('init', function() {
     let stripe = this.get('stripe');
 
     stripe.card.createToken();
