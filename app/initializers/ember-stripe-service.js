@@ -1,5 +1,4 @@
 import EmberError from '@ember/error';
-import Ember from 'ember';
 import StripeMock from 'ember-stripe-service/utils/stripe-mock';
 import config from '../config/environment';
 
@@ -13,7 +12,8 @@ export function initialize() {
   application.inject('service:stripe', 'config', 'config:stripe');
 
   if (stripeConfig.debug) {
-    Ember.Logger.info('StripeService: initialize');
+    /* eslint-disable no-console */
+    console.log('StripeService: initialize');
   }
 
   if (!stripeConfig.publishableKey) {
